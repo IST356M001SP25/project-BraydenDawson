@@ -1,7 +1,7 @@
 # Reflection
 
-Student Name:  name
-Student Email:  email
+Student Name:  Brayden Dawson
+Student Email:  Bcdawson@syr.edu
 
 ## Instructions
 
@@ -23,3 +23,14 @@ Examples:
 
 `--- Reflection Below This Line ---`
 
+This project helped me reinforce a lot of the concepts we practiced in IST 356. I learned how to structure a real-world Python application using modular files, such as separating the extract and transform logic into their own scripts. I also learned how to build a user interface using Streamlit and connect it with live API data from OpenWeatherMap.
+
+One area I struggled with was handling API authentication errors. At one point, my API key worked in the browser but not in my Python code, and debugging that took more time than I expected. I learned how to use print statements and `st.write()` for debugging in Streamlit, and I now understand how secrets and environment variables are used to manage API keys securely.
+
+Another challenge was learning how to implement caching. Once I understood how to check for an existing file and load it with `json.load()`, it became much clearer. I had never used file-based caching before, and I now see how useful it is to reduce API calls and speed up performance.
+
+I also learned how to write unit tests for individual functions using `pytest`. While simple, writing tests helped me confirm that my data transformations were behaving as expected and made me more confident that future changes wouldn't break the app.
+
+If I had more time, I would extend the dashboard with additional filters, like choosing temperature units (Celsius/Fahrenheit), or allowing users to select specific date ranges for the forecast. I would also try deploying it online using Streamlit Cloud so others could interact with it more easily.
+
+Overall, this project helped me apply what I’ve learned about functions, APIs, Streamlit, testing, and data visualization — and gave me a better sense of how to build and organize Python projects from scratch.
