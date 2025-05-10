@@ -2,26 +2,33 @@ import streamlit as st
 from code.extract import get_weather_data
 from code.transform import process_weather_data
 import plotly.express as px
+import requests
 
 st.title("📈 Weather Forecast Dashboard")
 
+# Inputs
 city = st.text_input("Enter city", value="Syracuse")
-api_key = "02551e4e2aae1c018ddfa4bc99aac05c"  # Use st.secrets in final version
-
-# Refresh toggle
+api_key = "02551e4e2aae1c018ddfa4bc99aac05c"  # Or use st.secrets["OWM_API_KEY"]
 refresh_data = st.checkbox("Force refresh from API", value=False)
 
+# Single button
 if st.button("Get Weather"):
+    use_cache = not refresh_data
+
     try:
-        raw = get_weather_data(city, api_key, use_cache=not refresh_data)
+        raw = get_weather_data(city, api_key, use_cache=use_cache)
         df = process_weather_data(raw)
 
+        st.success(f"✅ Loaded weather for {city.title()} ({'cached' if use_cache else 'fresh from API'})")
+
+        # Charts
         st.subheader("🌡️ Temperature Over Time")
         st.plotly_chart(px.line(df, x="datetime", y="temperature", title="Temperature (°C)"))
 
         st.subheader("💧 Humidity Over Time")
         st.plotly_chart(px.line(df, x="datetime", y="humidity", title="Humidity (%)"))
 
+        # Icon Preview
         st.subheader("🌦️ Weather Preview")
         for i in range(0, len(df), 8):  # One icon per day
             row = df.iloc[i]
@@ -32,10 +39,13 @@ if st.button("Get Weather"):
                 caption=row["description"].title()
             )
 
-    except Exception as e:
-        if "404" in str(e):
+    except requests.exceptions.HTTPError as e:
+        status_code = e.response.status_code
+        if status_code == 404:
             st.error("❌ City not found. Please check the name and try again.")
-        elif "401" in str(e):
-            st.error("🔒 Unauthorized. Your API key might be incorrect or expired.")
+        elif status_code == 401:
+            st.error("🔒 Unauthorized. Please check your API key.")
         else:
-            st.error(f"🚨 Something went wrong: {e}")
+            st.error(f"🌐 HTTP Error {status_code}")
+    except Exception as e:
+        st.error(f"🚨 Unexpected error: {e}")
